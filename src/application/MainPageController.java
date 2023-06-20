@@ -4,28 +4,23 @@ import java.net.URL;
 import javafx.util.Duration;
 import service.UserService;
 import support.dto.User;
-import support.result.AuthorizationResult;
 import support.result.CreationResult;
 
 import java.util.ResourceBundle;
 
 import config.ApplicationConfig;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.animation.TranslateTransition;
 
-public class LoginPageController {
+public class MainPageController {
 
 	private final UserService userService = ApplicationConfig.getUserService();
 	
@@ -162,20 +157,14 @@ public class LoginPageController {
     
     @FXML
     private void loginButtonClick() {
-    	final User user = new User()
-    			.setUserEmail(emailTextField.getText())
-    			.setPasswordHash(passwordTextField.getText());
-    	
-    	AuthorizationResult result = userService.login(user);
-    	if(result.isSuccess()) {
-    		openMainPage();
-    	}
+    	System.out.println("Login button clicked!");
     }
     
     @FXML
     private void signupButtonClick() {
     	final User user = User.createStandartUser(signupName.getText(), signupPassword.getText(), signupEmail.getText());
     	CreationResult result = userService.register(user);
+    	System.out.println(result.getMessage());
     }
     
     
@@ -186,25 +175,5 @@ public class LoginPageController {
     	emailTextField.clear();
     	passwordTextField.clear();
     }
-    
-	private void openMainPage() {
-        try {
-			Image icon = new Image(getClass().getResourceAsStream("icon.png"));
-        	AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("MainPage.fxml"));
-        	Stage activeStage =(Stage) loginButton.getScene().getWindow();
-        	activeStage.close();
-            Stage stage = new Stage();
-            stage.setTitle("Home Page");
-            stage.setScene(new Scene(root, 450, 450));
-            stage.setResizable(false);
-            stage.getIcons().add(icon);
-            stage.setMaximized(false);
-            stage.show();
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-	}
     
 }

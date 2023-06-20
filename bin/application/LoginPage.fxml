@@ -1,7 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-	
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginPageController">
-	<!-- TODO Add Nodes -->
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorpane" minHeight="500.0" minWidth="700.0" prefHeight="400.0" prefWidth="626.0" scaleShape="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginPageController">
+   <children>
+      <Rectangle id="background" fx:id="background" arcHeight="5.0" arcWidth="5.0" fill="#40b6da" height="506.0" layoutY="-5.0" stroke="BLACK" strokeType="INSIDE" width="700.0" />
+      <Rectangle id="login" fx:id="login" arcHeight="5.0" arcWidth="5.0" fill="#fcfcfc" height="389.0" layoutX="170.0" layoutY="48.0" stroke="#616161" strokeLineCap="ROUND" strokeLineJoin="BEVEL" strokeWidth="2.0" width="345.0" />
+      <Rectangle fx:id="chooser" arcHeight="30.0" arcWidth="30.0" fill="WHITE" height="40.0" layoutX="251.0" layoutY="60.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="200.0" />
+      <Rectangle fx:id="fixedRectangle" arcHeight="30.0" arcWidth="30.0" fill="WHITE" height="40.0" layoutX="251.0" layoutY="60.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="109.0" />
+      <Rectangle fx:id="chosen" arcHeight="30.0" arcWidth="30.0" fill="#7332d1" height="40.0" layoutX="251.0" layoutY="60.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="109.0" />
+      <Label fx:id="loginLabel" layoutX="284.0" layoutY="70.0" onMouseClicked="#loginLabelClicked" text="Login" textFill="WHITE">
+         <font>
+            <Font name="Arial" size="17.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="signupLabel" layoutX="368.0" layoutY="69.0" onMouseClicked="#signupLabelClick" text="Sign up">
+         <font>
+            <Font name="Arial" size="17.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Pane fx:id="loginPane" layoutX="210.0" layoutY="128.0" prefHeight="288.0" prefWidth="281.0">
+      <TextField fx:id="emailTextField" layoutX="66.0" layoutY="62.0" prefHeight="25.0" prefWidth="177.0" promptText="Email">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="passwordTextField" layoutX="66.0" layoutY="113.0" prefHeight="25.0" prefWidth="177.0" promptText="Password">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </PasswordField>
+      <Label fx:id="emailIcon" layoutX="39.0" layoutY="64.0" style="-fx-border-color: BLACK; -fx-border-radius: 100;" text="\@">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="passwordIcon" layoutX="39.0" layoutY="115.0" style="-fx-border-color: BLACK; -fx-border-radius: 100;" text="🔑">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Rectangle fx:id="loginButton" arcHeight="20.0" arcWidth="20.0" fill="#8361c2" height="31.0" layoutX="95.0" layoutY="175.0" onMouseClicked="#loginButtonClick" stroke="BLACK" strokeType="INSIDE" width="120.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Rectangle>
+      <Label fx:id="loginButtonLabel" layoutX="140.0" layoutY="182.0" onMouseClicked="#loginButtonClick" text="Login" textFill="WHITE">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      </Pane>
+      <Pane fx:id="signupPane" layoutX="560.0" layoutY="128.0" prefHeight="300.0" prefWidth="281.0" visible="false">
+         <children>
+            <TextField fx:id="signupName" layoutX="66.0" layoutY="107.0" prefHeight="25.0" prefWidth="177.0" promptText="Name">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="signupEmail" layoutX="66.0" layoutY="149.0" prefHeight="25.0" prefWidth="177.0" promptText="Email">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <PasswordField fx:id="signupPassword" layoutX="66.0" layoutY="191.0" prefHeight="25.0" prefWidth="177.0" promptText="Password">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </PasswordField>
+            <Label fx:id="emailIcon1" layoutX="39.0" layoutY="151.0" style="-fx-border-color: BLACK; -fx-border-radius: 100;" text="\@">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="passwordIcon1" layoutX="39.0" layoutY="193.0" style="-fx-border-color: BLACK; -fx-border-radius: 100;" text="🔑">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="signupButton" arcHeight="20.0" arcWidth="20.0" fill="#8361c2" height="31.0" layoutX="87.0" layoutY="233.0" onMouseClicked="#signupButtonClick" stroke="BLACK" strokeType="INSIDE" width="120.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Label fx:id="signupButtonLabel" layoutX="126.0" layoutY="240.0" onMouseClicked="#signupButtonClick" text="Sign Up" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label fx:id="emailIcon11" layoutX="39.0" layoutY="109.0" style="-fx-border-color: BLACK; -fx-border-radius: 100;" text="👤">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="tempImage" alignment="CENTER" layoutX="99.0" layoutY="5.0" prefHeight="96.0" prefWidth="96.0" style="-fx-border-radius: 250; -fx-border-color: black; -fx-border-image-insets: false;" text="👤">
+               <font>
+                  <Font size="52.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </Label>
+         </children>
+      </Pane>
+   </children>
 </AnchorPane>
