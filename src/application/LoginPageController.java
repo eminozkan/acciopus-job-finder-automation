@@ -5,6 +5,8 @@ import javafx.util.Duration;
 import service.UserService;
 import support.dto.User;
 import support.result.AuthorizationResult;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import support.result.CreationResult;
 
 import java.util.ResourceBundle;
@@ -167,8 +169,20 @@ public class LoginPageController {
     			.setPasswordHash(passwordTextField.getText());
     	
     	AuthorizationResult result = userService.login(user);
-    	if(result.isSuccess()) {
-    		openMainPage();
+    	if(result.isSuccess()){
+        		Alert alert1 = new Alert(AlertType.INFORMATION);
+        		alert1.setTitle("Information");
+        		alert1.setHeaderText("Success");
+        		alert1.setContentText("Logged into account!");
+        		alert1.showAndWait();
+        		openMainPage();
+    	}
+    	else {
+    		Alert alert1 = new Alert(AlertType.ERROR);
+    		alert1.setTitle("Error");
+    		alert1.setHeaderText("Failed");
+    		alert1.setContentText("Failed to login. Reason : " + result.getMessage());
+    		alert1.showAndWait();
     	}
     }
     
@@ -176,6 +190,19 @@ public class LoginPageController {
     private void signupButtonClick() {
     	final User user = User.createStandartUser(signupName.getText(), signupPassword.getText(), signupEmail.getText());
     	CreationResult result = userService.register(user);
+    	if(result.isSuccess()) {
+    		Alert alert1 = new Alert(AlertType.INFORMATION);
+    		alert1.setTitle("Information");
+    		alert1.setHeaderText("Success");
+    		alert1.setContentText("User has registered successfully!");
+    		alert1.showAndWait();
+    	}else {
+    		Alert alert1 = new Alert(AlertType.ERROR);
+    		alert1.setTitle("ERROR");
+    		alert1.setHeaderText("Failed");
+    		alert1.setContentText("User has failed to register! Reason : " + result.getMessage());
+    		alert1.showAndWait();
+    	}
     }
     
     
@@ -195,7 +222,7 @@ public class LoginPageController {
         	activeStage.close();
             Stage stage = new Stage();
             stage.setTitle("Home Page");
-            stage.setScene(new Scene(root, 450, 450));
+            stage.setScene(new Scene(root, 1024, 600));
             stage.setResizable(false);
             stage.getIcons().add(icon);
             stage.setMaximized(false);

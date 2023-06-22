@@ -1,150 +1,221 @@
 package application;
 
 import java.net.URL;
-import javafx.util.Duration;
-import service.UserService;
-import support.dto.User;
-import support.result.CreationResult;
-
 import java.util.ResourceBundle;
 
-import config.ApplicationConfig;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.animation.TranslateTransition;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.util.Duration;
 
 public class MainPageController {
 
-	private final UserService userService = ApplicationConfig.getUserService();
-	
-    @FXML
-    private ResourceBundle resources;
+    	@FXML
+    	private ResourceBundle resources;
+
+    	@FXML
+    	private URL location;
+
+    	@FXML
+	    private Label addressLabel;
+
+	    @FXML
+	    private TextArea addressText;
+
+	    @FXML
+	    private AnchorPane anchorpane;
+
+	    @FXML
+	    private Button applyButton;
+
+	    @FXML
+	    private Rectangle background;
+
+	    @FXML
+	    private Label cPasswordLabel;
+
+	    @FXML
+	    private Button changePassButton;
+
+	    @FXML
+	    private PasswordField currentPasswordText;
+
+	    @FXML
+	    private Label cvLabel;
+
+	    @FXML
+	    private TextField headerTextField;
+
+	    @FXML
+	    private DatePicker jobDate;
+
+	    @FXML
+	    private Pane jobListPane;
+
+	    @FXML
+	    private TableView<?> jobListTableView;
+
+	    @FXML
+	    private Spinner<Integer> jobSalaryField;
+
+	    @FXML
+	    private TextArea jobTextArea;
+
+	    @FXML
+	    private Label jobs;
+
+	    @FXML
+	    private Label jobs1;
+
+	    @FXML
+	    private Label logout;
+
+	    @FXML
+	    private Pane menu;
+
+	    @FXML
+	    private Label menuLabel;
+
+	    @FXML
+	    private Label myApplications;
+
+	    @FXML
+	    private Pane myApplicationsPane;
+
+	    @FXML
+	    private TableView<?> myApplicationsTableView;
+
+	    @FXML
+	    private TableView<?> myJobListTableView;
+
+	    @FXML
+	    private Spinner<Integer> myJobSalaryField;
+	    
+	    @FXML
+	    private Button seeApplicationsButton;
+
+	    @FXML
+	    private TextField myJobsHeaderText;
+
+	    @FXML
+	    private Pane myJobsPane;
+
+	    @FXML
+	    private TextArea myJobsTextArea;
+
+	    @FXML
+	    private Label nPasswordLabel;
+
+	    @FXML
+	    private Label nPasswordLabel2;
+
+	    @FXML
+	    private Label nameLabel;
+
+	    @FXML
+	    private TextField nameText;
+
+	    @FXML
+	    private Rectangle navbar;
+
+	    @FXML
+	    private PasswordField newPasswordText;
+
+	    @FXML
+	    private PasswordField newPasswordText2;
+
+	    @FXML
+	    private Button newPostButton;
+
+	    @FXML
+	    private Label notificationCounter;
+
+	    @FXML
+	    private Pane notificationPane;
+
+	    @FXML
+	    private TableView<?> notificationTableView;
+
+	    @FXML
+	    private Label notifications;
+
+	    @FXML
+	    private Label phoneLabel;
+
+	    @FXML
+	    private TextField phoneText;
+
+	    @FXML
+	    private Label profile;
+
+	    @FXML
+	    private Pane profilePane;
+
+	    @FXML
+	    private Button removeApplicationButton;
+
+	    @FXML
+	    private Button removePostButton;
+
+	    @FXML
+	    private TextField searchField;
+
+	    @FXML
+	    private Label surnameLabel;
+
+	    @FXML
+	    private TextField surnameText;
+
+	    @FXML
+	    private Button updateJobButton;
+
+	    @FXML
+	    private Button updateProfileButton;
+
+	    @FXML
+	    private Button uploadCvButton;
+
 
     @FXML
-    private URL location;
-
-    @FXML
-    private AnchorPane anchorpane;
-
-    @FXML
-    private Rectangle background;
-
-    @FXML
-    private Rectangle chooser;
-
-    @FXML
-    private Rectangle chosen;
-
-    @FXML
-    private Label emailIcon;
-
-    @FXML
-    private Label emailIcon1;
-
-    @FXML
-    private Label emailIcon11;
-
-    @FXML
-    private TextField emailTextField;
-
-    @FXML
-    private Rectangle fixedRectangle;
-
-    @FXML
-    private Rectangle login;
-
-    @FXML
-    private Rectangle loginButton;
-
-    @FXML
-    private Label loginButtonLabel;
-
-    @FXML
-    private Label loginLabel;
-
-    @FXML
-    private Pane loginPane;
-
-    @FXML
-    private Label passwordIcon;
-
-    @FXML
-    private Label passwordIcon1;
-
-    @FXML
-    private PasswordField passwordTextField;
-
-    @FXML
-    private Rectangle signupButton;
-
-    @FXML
-    private Label signupButtonLabel;
-
-    @FXML
-    private TextField signupEmail;
-
-    @FXML
-    private Label signupLabel;
-
-    @FXML
-    private TextField signupName;
-
-    @FXML
-    private Pane signupPane;
-
-    @FXML
-    private PasswordField signupPassword;
-    
-    @FXML
-    private Label tempImage;
-    
-
-
-    @FXML
-    void initialize() {        
-
+    void initialize() {
+    	profilePane.setVisible(true);
+    	SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
+        jobSalaryField.setValueFactory(valueFactory);
+        myJobSalaryField.setValueFactory(valueFactory);
+        
     }
     
     @FXML
-    private void loginLabelClicked() {
-    	if(chosen.getLayoutX() != 251) {
-        	setTransition(chosen,421,60,342,60,400);
-    		loginLabel.setTextFill(Color.WHITE);
-    		signupLabel.setTextFill(Color.BLACK);
-    		chosen.relocate(251, 60);
-    		loginPane.setVisible(true);
-    		signupPane.setVisible(false);
-    		loginPane.relocate(206, 127);
-    		loginPane.setVisible(true);
-    		clearFields();
+    void menuClick(MouseEvent event) {
+    	if(menu.isVisible()) {
+    		menu.setVisible(false);
+    		setTransition(menuLabel,93,14,6,6,400);
+        	
+    	}else {
+    		setTransition(menu,-1024,-65,0,0,400);
+    		setTransition(menuLabel,6,6,93,14,450);
+    		menu.setVisible(true);
     	}
+    	
     }
-    
-    @FXML
-    private void signupLabelClick() {
-    	if(chosen.getLayoutX() != 342) {
-    		setTransition(chosen,170,60,252,60,400);
-    		loginPane.setVisible(false);
-    		signupPane.setVisible(true);
-    		signupPane.relocate(206, 127);
-    		loginLabel.setTextFill(Color.BLACK);
-    		signupLabel.setTextFill(Color.WHITE);
-			chosen.relocate(342, 60);
-			loginPane.setVisible(false);
-			clearFields();
-    	}
-    }
+
     
     private void setTransition(Node n,double locationFromX,double locationFromY,double locationToX,double locationToY,double millis) {
     	TranslateTransition transition = new TranslateTransition();
-		transition.setNode(chosen);
+		transition.setNode(n);
 		Duration d = Duration.millis(millis);
 		transition.setDuration(d);
 		transition.setFromX(locationFromX - n.getLayoutX());
@@ -154,26 +225,49 @@ public class MainPageController {
 		transition.play();
     }
     
+    @FXML
+    private void openProfile() {
+    	setPanesVisibleFalse();
+    	profilePane.setVisible(true);
+    }
     
     @FXML
-    private void loginButtonClick() {
-    	System.out.println("Login button clicked!");
+    private void openJobList() {
+    	setPanesVisibleFalse();
+    	jobListPane.setVisible(true);
+    }
+    
+    
+    @FXML
+    void openMyJobList() {
+    	setPanesVisibleFalse();
+    	myJobsPane.setVisible(true);
+    	
     }
     
     @FXML
-    private void signupButtonClick() {
-    	final User user = User.createStandartUser(signupName.getText(), signupPassword.getText(), signupEmail.getText());
-    	CreationResult result = userService.register(user);
-    	System.out.println(result.getMessage());
+    void openNotificationPane() {
+    	setPanesVisibleFalse();
+    	notificationPane.setVisible(true);
     }
     
     
-    private void clearFields() {
-    	signupEmail.clear();
-    	signupPassword.clear();
-    	signupName.clear();
-    	emailTextField.clear();
-    	passwordTextField.clear();
+    @FXML
+    void openApplicationsPane() {
+    	setPanesVisibleFalse();
+    	myApplicationsPane.setVisible(true);
     }
+
+    
+    private void setPanesVisibleFalse() {
+    	profilePane.setVisible(false);
+    	myJobsPane.setVisible(false);
+    	jobListPane.setVisible(false);
+    	notificationPane.setVisible(false);
+    	myApplicationsPane.setVisible(false);
+    }
+    
+    
+    
     
 }
