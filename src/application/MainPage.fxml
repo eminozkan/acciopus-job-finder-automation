@@ -49,11 +49,6 @@
             <TextField fx:id="surnameText" layoutX="194.0" layoutY="199.0" prefHeight="25.0" prefWidth="168.0" promptText="Surname..." />
             <TextField fx:id="phoneText" layoutX="194.0" layoutY="251.0" prefHeight="25.0" prefWidth="168.0" promptText="0555..." />
             <TextArea fx:id="addressText" layoutX="194.0" layoutY="300.0" prefHeight="137.0" prefWidth="232.0" promptText="Adress..." />
-            <Button fx:id="uploadCvButton" layoutX="194.0" layoutY="481.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" style="-fx-background-color: #7882f5; -fx-background-radius: 15px;" text="Upload CV" textFill="WHITE">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
             <Label fx:id="cPasswordLabel" layoutX="552.0" layoutY="146.0" text="Current Password:" textFill="WHITE">
                <font>
                   <Font size="20.0" />
@@ -72,7 +67,7 @@
             <PasswordField fx:id="currentPasswordText" layoutX="719.0" layoutY="149.0" prefHeight="25.0" prefWidth="168.0" promptText="Current Password" />
             <PasswordField fx:id="newPasswordText" layoutX="719.0" layoutY="195.0" prefHeight="25.0" prefWidth="168.0" promptText="New Password" />
             <PasswordField fx:id="newPasswordText2" layoutX="719.0" layoutY="247.0" prefHeight="25.0" prefWidth="168.0" promptText="New Password (Again)" />
-            <Button fx:id="changePassButton" layoutX="755.0" layoutY="299.0" mnemonicParsing="false" style="-fx-background-color: #7882f5; -fx-background-radius: 15px; -fx-padding: 10px;" text="Change Password" textFill="WHITE">
+            <Button fx:id="changePassButton" layoutX="755.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#changePasswordButtonClick" style="-fx-background-color: #7882f5; -fx-background-radius: 15px; -fx-padding: 10px;" text="Change Password" textFill="WHITE">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
@@ -81,7 +76,7 @@
                   <Font name="System Bold" size="55.0" />
                </font>
             </Label>
-            <Button fx:id="updateProfileButton" layoutX="407.0" layoutY="516.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" style="-fx-border-radius: 15px; -fx-background-radius: 15px; -fx-padding: 10px; -fx-background-color: green;" text="Update Profile" textFill="WHITE">
+            <Button fx:id="updateProfileButton" layoutX="407.0" layoutY="516.0" mnemonicParsing="false" onMouseClicked="#updateProfile" prefHeight="25.0" prefWidth="126.0" style="-fx-border-radius: 15px; -fx-background-radius: 15px; -fx-padding: 10px; -fx-background-color: green;" text="Update Profile" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -89,6 +84,19 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <Button fx:id="uploadCvButton" layoutX="194.0" layoutY="481.0" mnemonicParsing="false" onMouseClicked="#uploadCV" prefHeight="25.0" prefWidth="126.0" style="-fx-background-color: #7882f5; -fx-background-radius: 15px;" text="Upload CV" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Label fx:id="viewCV" layoutX="335.0" layoutY="483.0" onMouseClicked="#openCV" style="-fx-underline: true;" text="View CV" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
          </children>
       </Pane>
       <Pane fx:id="jobListPane" layoutX="71.0" layoutY="9.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
@@ -203,7 +211,7 @@
             </Button>
          </children>
       </Pane>
-      <Pane fx:id="notificationPane" layoutX="81.0" layoutY="19.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
+      <Pane fx:id="notificationPane" layoutX="71.0" layoutY="9.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
          <children>
             <Label layoutX="351.0" layoutY="14.0" text="🔔 Notifications" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -221,7 +229,7 @@
             </TableView>
          </children>
       </Pane>
-      <Pane fx:id="myApplicationsPane" layoutX="91.0" layoutY="29.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
+      <Pane fx:id="myApplicationsPane" layoutX="71.0" layoutY="9.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
          <children>
             <Label layoutX="335.0" layoutY="14.0" text="✅ My Applications" textAlignment="CENTER" textFill="WHITE">
                <font>

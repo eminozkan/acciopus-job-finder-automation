@@ -106,7 +106,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="tempImage" alignment="CENTER" layoutX="99.0" layoutY="5.0" prefHeight="96.0" prefWidth="96.0" style="-fx-border-radius: 250; -fx-border-color: black; -fx-border-image-insets: false;" text="👤">
+            <Label fx:id="tempImage" alignment="CENTER" layoutX="105.0" layoutY="14.0" prefHeight="84.0" prefWidth="84.0" style="-fx-border-radius: 250; -fx-border-color: black; -fx-border-image-insets: false;" text="👤">
                <font>
                   <Font size="52.0" />
                </font>

@@ -1,9 +1,14 @@
 package application;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import config.ApplicationConfig;
 import javafx.animation.TranslateTransition;
+import javafx.stage.Stage;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -13,16 +18,26 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.util.Duration;
+import service.UserService;
+import support.dto.User;
+import support.dto.ChangePasswordRequest;
+import support.result.UpdateResult;
+import support.session.UserSession;
+import javafx.stage.FileChooser;
 
 public class MainPageController {
-
+	
+		private UserService userService = ApplicationConfig.getUserService();
+	
     	@FXML
     	private ResourceBundle resources;
 
@@ -187,6 +202,9 @@ public class MainPageController {
 
 	    @FXML
 	    private Button uploadCvButton;
+	    
+	    @FXML
+	    private Label viewCV;
 
 
     @FXML
@@ -196,7 +214,21 @@ public class MainPageController {
         jobSalaryField.setValueFactory(valueFactory);
         myJobSalaryField.setValueFactory(valueFactory);
         
+        fillUserDetails();
+        
     }
+
+	private void fillUserDetails() {
+		nameText.setText(UserSession.getUserName());
+        surnameText.setText(UserSession.getUser().getSurname());
+        phoneText.setText(UserSession.getUser().getPhoneNumber());
+        addressText.setText(UserSession.getUser().getAdress());
+        if(!UserSession.getUser().hasUserCV()) {
+        	viewCV.setVisible(false);
+        }else {
+        	viewCV.setVisible(true);
+        }
+	}
     
     @FXML
     void menuClick(MouseEvent event) {
@@ -228,12 +260,15 @@ public class MainPageController {
     @FXML
     private void openProfile() {
     	setPanesVisibleFalse();
+    	setTransition(profilePane,profilePane.getLayoutX(),profilePane.getLayoutY() - 1000,profilePane.getLayoutX(),profilePane.getLayoutY(),500);
     	profilePane.setVisible(true);
+        fillUserDetails();
     }
     
     @FXML
     private void openJobList() {
     	setPanesVisibleFalse();
+    	setTransition(jobListPane,jobListPane.getLayoutX(),jobListPane.getLayoutY() - 1000,jobListPane.getLayoutX(),jobListPane.getLayoutY(),400);
     	jobListPane.setVisible(true);
     }
     
@@ -241,6 +276,7 @@ public class MainPageController {
     @FXML
     void openMyJobList() {
     	setPanesVisibleFalse();
+    	setTransition(myJobsPane,myJobsPane.getLayoutX(),myJobsPane.getLayoutY() - 1000,myJobsPane.getLayoutX(),myJobsPane.getLayoutY(),400);
     	myJobsPane.setVisible(true);
     	
     }
@@ -248,6 +284,7 @@ public class MainPageController {
     @FXML
     void openNotificationPane() {
     	setPanesVisibleFalse();
+    	setTransition(notificationPane,notificationPane.getLayoutX(),notificationPane.getLayoutY() - 1000,notificationPane.getLayoutX(),notificationPane.getLayoutY(),400);
     	notificationPane.setVisible(true);
     }
     
@@ -255,6 +292,7 @@ public class MainPageController {
     @FXML
     void openApplicationsPane() {
     	setPanesVisibleFalse();
+    	setTransition(myApplicationsPane,myApplicationsPane.getLayoutX(),myApplicationsPane.getLayoutY() - 1000,myApplicationsPane.getLayoutX(),myApplicationsPane.getLayoutY(),400);
     	myApplicationsPane.setVisible(true);
     }
 
@@ -268,6 +306,118 @@ public class MainPageController {
     }
     
     
+    @FXML
+    void updateProfile() {
+    	User user = new User()
+    			.setName(nameText.getText())
+    			.setSurname(surnameText.getText())
+    			.setPhoneNumber(phoneText.getText())
+    			.setAdress(addressText.getText());
+    	
+    	UpdateResult result = userService.updateProfile(user);
+    	if(result.isSuccess()) {
+    		Alert alert1 = new Alert(AlertType.INFORMATION);
+    		alert1.setTitle("Information");
+    		alert1.setHeaderText("Success");
+    		alert1.setContentText("User has been updated successfully!");
+    		alert1.showAndWait();
+    	}else {
+    		Alert alert1 = new Alert(AlertType.ERROR);
+    		alert1.setTitle("ERROR");
+    		alert1.setHeaderText("Failed");
+    		alert1.setContentText("Update operation failed! Reason : " + result.getMessage());
+    		alert1.showAndWait();
+    	}
+    
+    }
+    
+    
+    @FXML
+    void uploadCV() {
+    	Stage stage = new Stage();
+    	FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            System.out.println("Choosen File: " + selectedFile.getAbsolutePath());
+            userService.uploadCV(selectedFile);
+            fillUserDetails();
+        } else {
+            System.out.println("No file choosed.");
+        }
+    }
+    
+    @FXML
+    void openCV() throws IOException {
+    	String url = userService.getCV().getFilePath();
+    	if(url == null) {
+    		Alert alert1 = new Alert(AlertType.ERROR);
+    		alert1.setTitle("ERROR");
+    		alert1.setHeaderText("Failed");
+    		alert1.setContentText("You dont have any uploaded cv!");
+    		alert1.showAndWait();
+    	}else {
+    		try {
+    		String os = System.getProperty("os.name").toLowerCase();
+        	if(os.indexOf("win") >= 0) {
+        		Runtime rt = Runtime.getRuntime();
+        			rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+
+        	}else if(os.indexOf("mac") >= 0) {
+        		Runtime rt = Runtime.getRuntime();
+        		rt.exec("open " + url);
+        	}else if(os.indexOf("nix") >=0 || os.indexOf("nux") >=0) {
+        		Runtime rt = Runtime.getRuntime();
+        		String[] browsers = { "google-chrome", "firefox", "mozilla", "epiphany", "konqueror",
+        		                                 "netscape", "opera", "links", "lynx" };
+        		 
+        		StringBuffer cmd = new StringBuffer();
+        		for (int i = 0; i < browsers.length; i++)
+        		    if(i == 0)
+        		        cmd.append(String.format(    "%s \"%s\"", browsers[i], url));
+        		    else
+        		        cmd.append(String.format(" || %s \"%s\"", browsers[i], url)); 
+        		rt.exec(new String[] { "sh", "-c", cmd.toString() });
+        	}
+        	}catch(Exception e) {
+        		Alert alert1 = new Alert(AlertType.ERROR);
+        		alert1.setTitle("ERROR");
+        		alert1.setHeaderText("Failed");
+        		alert1.setContentText(e.getMessage());
+        		alert1.showAndWait();
+        	}
+    	}
+    }
+    
+    @FXML
+    void changePasswordButtonClick() {
+    	if(newPasswordText.getText().equals(newPasswordText2.getText()) && !currentPasswordText.getText().isEmpty() && !newPasswordText.getText().isEmpty() && !newPasswordText2.getText().isEmpty()) {
+    		ChangePasswordRequest request = new ChangePasswordRequest(currentPasswordText.getText(),newPasswordText.getText());
+    		UpdateResult result = userService.changePassword(request);
+    		if(result.isSuccess()) {
+    			Alert alert1 = new Alert(AlertType.INFORMATION);
+        		alert1.setTitle("INFORMATION");
+        		alert1.setHeaderText("Success");
+        		alert1.setContentText("You have changed password successfully");
+        		alert1.showAndWait();
+    		}else {
+    			Alert alert1 = new Alert(AlertType.ERROR);
+        		alert1.setTitle("ERROR");
+        		alert1.setHeaderText("Failed");
+        		alert1.setContentText(result.getMessage());
+        		alert1.showAndWait();
+    		}
+    	}else {
+    		Alert alert1 = new Alert(AlertType.ERROR);
+    		alert1.setTitle("ERROR");
+    		alert1.setHeaderText("Failed");
+    		alert1.setContentText("Check fields!");
+    		alert1.showAndWait();
+    	}
+    	
+    }
     
     
 }
