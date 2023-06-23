@@ -235,4 +235,54 @@ public class JobServiceImpl implements JobService{
 		return userList;
 	}
 
+	@Override
+	public ObservableList<Job> getApplicationsByUserId(int userId) {
+		ObservableList<Job> jobList = FXCollections.observableArrayList();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select applications.applicationId, jobs.companyName , jobs.jobHeader , jobs.jobText, jobs.jobSalary , applications.applicationDate from jobs "
+					+ "INNER JOIN applications ON jobs.jobId = applications.jobId where applications.userId = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			preparedStatement.setInt(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+				while (resultSet.next()) {
+					Job j = new Job()
+							.setJobId(resultSet.getInt("applicationId"))
+							.setCompanyName(resultSet.getString("companyName"))
+							.setJobHeader(resultSet.getString("jobHeader"))
+							.setJobSalary(resultSet.getInt("jobSalary"))
+							.setJobPostedDate(resultSet.getTimestamp("applicationDate"));
+					
+					jobList.add(j);
+							
+				}
+				
+				preparedStatement.close();
+				connection.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobList;
+	}
+
+	@Override
+	public void deleteJobApplication(int applicationId) {
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+            String insertQuery = "Delete from applications where applicationId = ?";
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setInt(1,applicationId);
+            preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+            connection.close();
+            logger.information("User : \'" + UserSession.getUserEmail() + "\' has deleted his application.");
+		}catch(Exception e) {
+			logger.debug("User : \'" + UserSession.getUserEmail()+ "\' has failed to deleting application. Reason : " + e.getMessage());
+		}
+		
+	}
+
 }

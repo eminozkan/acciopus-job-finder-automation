@@ -20,4 +20,8 @@ public interface JobService {
 	void deleteJobPost(Job j);
 
 	ObservableList<User> getApplications(int jobId);
+
+	ObservableList<Job> getApplicationsByUserId(int userId);
+
+	void deleteJobApplication(int applicationId);
 }

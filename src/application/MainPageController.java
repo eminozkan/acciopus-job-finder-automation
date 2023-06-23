@@ -116,6 +116,18 @@ public class MainPageController {
     private TableColumn<User, String> applicationPhone;
     
     @FXML
+    private TableColumn<Job, String> myAppCompanyName;
+    
+    @FXML
+    private TableColumn<Job, String> myAppHeader;
+    
+    @FXML
+    private TableColumn<Job, String> myAppSalary;
+    
+    @FXML
+    private TableColumn<Job, String> myAppDate;
+    
+    @FXML
     private TableColumn<User, String> applicationAddress;
 
 	@FXML
@@ -152,7 +164,7 @@ public class MainPageController {
 	private Pane myApplicationsPane;
 
 	@FXML
-	private TableView<User> myApplicationsTableView;
+	private TableView<Job> myApplicationsTableView;
 
 	@FXML
 	private TableView<Job> myJobListTableView;
@@ -612,6 +624,36 @@ public class MainPageController {
 		setTransition(myApplicationsPane, myApplicationsPane.getLayoutX(), myApplicationsPane.getLayoutY() - 1000,
 				myApplicationsPane.getLayoutX(), myApplicationsPane.getLayoutY(), 400);
 		myApplicationsPane.setVisible(true);
+		fillMyApplicatonsTable();
+	}
+
+	private void fillMyApplicatonsTable() {
+		ObservableList<Job> myJobList = jobService.getApplicationsByUserId(UserSession.getUserId());
+		myAppCompanyName.setCellValueFactory(new PropertyValueFactory<>("companyName"));
+		myAppHeader.setCellValueFactory(new PropertyValueFactory<>("jobHeader"));
+		myAppSalary.setCellValueFactory(new PropertyValueFactory<>("jobSalary"));
+		myAppDate.setCellValueFactory(new PropertyValueFactory<>("jobPostedDate"));
+		
+		myApplicationsTableView.setItems(myJobList);
+		
+	}
+	
+	@FXML
+	private void removeMyApplication() {
+		int index = myApplicationsTableView.getSelectionModel().getSelectedIndex();
+		
+		if(index >= 0) {
+			int applicationId = jobService.getApplicationsByUserId(UserSession.getUserId()).get(index).getJobId();
+			jobService.deleteJobApplication(applicationId);
+			fillMyApplicatonsTable();
+		}else {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Failed");
+			alert1.setContentText("Select job to remove application");
+			alert1.showAndWait();
+		}
+	
 	}
 
 	private void setPanesVisibleFalse() {
