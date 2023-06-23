@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
             preparedStatement.setString(1,user.getName());
             preparedStatement.setString(2, MD5.encryptWithMD5(user.getPasswordHash()));
             preparedStatement.setString(3, user.getUserEmail());
-            preparedStatement.setInt(4, user.getRole() == Role.STANDART ? 2 : 1);
+            preparedStatement.setInt(4, 2);
             preparedStatement.executeUpdate();
             
             preparedStatement.close();

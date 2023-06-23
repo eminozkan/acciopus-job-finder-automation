@@ -1,5 +1,7 @@
 package config;
 
+import service.JobService;
+import service.JobServiceImpl;
 import service.Logger;
 import service.UserService;
 import service.UserServiceImpl;
@@ -12,5 +14,9 @@ public class ApplicationConfig {
 	
 	public static Logger getLogger() {
 		return new Logger();
+	}
+	
+	public static JobService getJobService(){
+		return new JobServiceImpl();
 	}
 }
