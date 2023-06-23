@@ -8,6 +8,7 @@ public class User {
 	private String adress;
 	private String passwordHash;
 	private String userEmail;
+	private String fullName;
 	private boolean hasUserCV;
 	private Role role;
 	
@@ -145,4 +146,9 @@ public class User {
 		this.hasUserCV = hasCV;
 		return this;
 	}
+
+	public String getFullName() {
+		return name + " " + surname;
+	}
+
 }

@@ -58,6 +58,9 @@ public class MainPageController {
 
 	@FXML
 	private URL location;
+	
+	@FXML
+	private TextField companyNameText;
 
 	@FXML
 	private Label addressLabel;
@@ -95,12 +98,31 @@ public class MainPageController {
 	@FXML
 	private Pane jobListPane;
 	
+	@FXML
+	private Pane applicationsPane;
+	
     @FXML
     private TableColumn<Job, String> header;
-   
+    
+    
+    @FXML
+    private TableColumn<User, String> applicationFullName;
+    
+    
+    @FXML
+    private TableColumn<User, String> applicationEmail;
+    
+    @FXML
+    private TableColumn<User, String> applicationPhone;
+    
+    @FXML
+    private TableColumn<User, String> applicationAddress;
 
 	@FXML
 	private TableView<Job> jobListTable;
+	
+	@FXML
+	private TableView<User> applicationList;
 
 	@FXML
 	private TextField jobSalaryField;
@@ -130,10 +152,10 @@ public class MainPageController {
 	private Pane myApplicationsPane;
 
 	@FXML
-	private TableView<?> myApplicationsTableView;
+	private TableView<User> myApplicationsTableView;
 
 	@FXML
-	private TableView<?> myJobListTableView;
+	private TableView<Job> myJobListTableView;
 
 	@FXML
 	private Spinner<Integer> myJobSalaryField;
@@ -194,6 +216,9 @@ public class MainPageController {
 
 	@FXML
 	private TextField phoneText;
+	
+	@FXML
+	private TextField salaryText;
 
 	@FXML
 	private Label profile;
@@ -218,6 +243,10 @@ public class MainPageController {
 
 	@FXML
 	private Button updateJobButton;
+	
+    @FXML
+    private Button viewApplicatorCVButton;
+    
 
 	@FXML
 	private Button updateProfileButton;
@@ -227,6 +256,18 @@ public class MainPageController {
 
 	@FXML
 	private Label viewCV;
+	
+    @FXML
+    private TableColumn<Job, String> myJobCompanyName;
+    
+    @FXML
+    private TableColumn<Job, String> myJobHeader;
+    
+    @FXML
+    private TableColumn<Job, String> myJobDescription;
+    
+    @FXML
+    private TableColumn<Job, String> myJobSalary;
 
 	@FXML
 	void initialize() {
@@ -239,13 +280,65 @@ public class MainPageController {
 		 Date now = new Date();
          Timestamp time = new Timestamp(now.getTime()); 
 		jobDate.setValue(time.toLocalDateTime().toLocalDate());
+		
+		fillMyJobListTableView();
 	}
 
 	private void fillJobListTableView() {	
 		header.setCellValueFactory(new PropertyValueFactory<>("jobHeaderWithCompanyName"));
 		jobListTable.setItems(jobService.getJobList());
+	}
 	
-
+	private void fillMyJobListTableView() {
+		myJobCompanyName.setCellValueFactory(new PropertyValueFactory<>("companyName"));
+		myJobHeader.setCellValueFactory(new PropertyValueFactory<>("jobHeader"));
+		myJobDescription.setCellValueFactory(new PropertyValueFactory<>("jobText"));
+		myJobSalary.setCellValueFactory(new PropertyValueFactory<>("jobSalary"));
+		
+		myJobListTableView.setItems(jobService.getJobListByUserId(UserSession.getUserId()));
+	}
+	
+	@FXML
+	private void myJobListClicked() {
+		int index = myJobListTableView.getSelectionModel().getSelectedIndex();
+		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(index);
+		myJobsHeaderText.setText(j.getJobHeader());
+		myJobsTextArea.setText(j.getJobText());
+		companyNameText.setText(j.getCompanyName());
+		salaryText.setText(j.getJobSalary() + "");
+	}
+	
+	@FXML
+	private void updateJobPost() {
+		int index = myJobListTableView.getSelectionModel().getSelectedIndex();
+		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(index);
+		j.setJobHeader(myJobsHeaderText.getText())
+		.setCompanyName(companyNameText.getText())
+		.setJobText(myJobsTextArea.getText())
+		.setJobSalary(Integer.parseInt(salaryText.getText()));
+		UpdateResult result = jobService.updateJobPost(j);
+		if(result.isSuccess()) {
+			Alert alert1 = new Alert(AlertType.INFORMATION);
+			alert1.setTitle("SUCCESS");
+			alert1.setHeaderText("Success");
+			alert1.setContentText("Job has been updated.");
+			alert1.showAndWait();
+			fillMyJobListTableView();
+		}else {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Failed");
+			alert1.setContentText(result.getMessage());
+			alert1.showAndWait();
+		}
+	}
+	
+	@FXML
+	private void removePost() {
+		int index = myJobListTableView.getSelectionModel().getSelectedIndex();
+		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(index);
+		jobService.deleteJobPost(j);
+		fillMyJobListTableView();
 	}
 	
 	@FXML
@@ -286,6 +379,52 @@ public class MainPageController {
 		newPostButton.setVisible(true);
 		
 	}
+
+	
+	//TODO update this method
+	@FXML
+	private void viewUserCV() {
+		int userId = jobService.getApplications(jobId).get(applicationList.getSelectionModel().getSelectedIndex()).getUserId();
+		String url = userService.getCV(userId).getFilePath();
+		if (url == null) {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Failed");
+			alert1.setContentText("User doesn't have any uploaded cv!");
+			alert1.showAndWait();
+		} else {
+			try {
+				String os = System.getProperty("os.name").toLowerCase();
+				if (os.indexOf("win") >= 0) {
+					Runtime rt = Runtime.getRuntime();
+					rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+
+				} else if (os.indexOf("mac") >= 0) {
+					Runtime rt = Runtime.getRuntime();
+					rt.exec("open " + url);
+				} else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+					Runtime rt = Runtime.getRuntime();
+					String[] browsers = { "google-chrome", "firefox", "mozilla", "epiphany", "konqueror", "netscape",
+							"opera", "links", "lynx" };
+
+					StringBuffer cmd = new StringBuffer();
+					for (int i = 0; i < browsers.length; i++)
+						if (i == 0)
+							cmd.append(String.format("%s \"%s\"", browsers[i], url));
+						else
+							cmd.append(String.format(" || %s \"%s\"", browsers[i], url));
+					rt.exec(new String[] { "sh", "-c", cmd.toString() });
+				}
+			} catch (Exception e) {
+				Alert alert1 = new Alert(AlertType.ERROR);
+				alert1.setTitle("ERROR");
+				alert1.setHeaderText("Failed");
+				alert1.setContentText(e.getMessage());
+				alert1.showAndWait();
+			}
+		}
+	}
+	
 	
 	@FXML
 	private void applyForJob() {
@@ -419,6 +558,7 @@ public class MainPageController {
 	@FXML
 	void openMyJobList() {
 		setPanesVisibleFalse();
+		fillMyJobListTableView();
 		setTransition(myJobsPane, myJobsPane.getLayoutX(), myJobsPane.getLayoutY() - 1000, myJobsPane.getLayoutX(),
 				myJobsPane.getLayoutY(), 400);
 		myJobsPane.setVisible(true);
@@ -432,9 +572,42 @@ public class MainPageController {
 				notificationPane.getLayoutX(), notificationPane.getLayoutY(), 400);
 		notificationPane.setVisible(true);
 	}
+	
+	@FXML
+	void openApplicationsPage() {
+		
+		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(myJobListTableView.getSelectionModel().getSelectedIndex());
+		if(j != null) {
+			System.out.println(j.getJobId() + "");
+			setPanesVisibleFalse();
+			fillApplicationListTable(j.getJobId());
+			setTransition(applicationsPane, applicationsPane.getLayoutX(), applicationsPane.getLayoutY() - 1000,
+					applicationsPane.getLayoutX(), applicationsPane.getLayoutY(), 400);
+			applicationsPane.setVisible(true);
+		}else {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Failed");
+			alert1.setContentText("Select job to view applications");
+			alert1.showAndWait();
+		}
+	}
+	
+	private int jobId;
+	
+	private void fillApplicationListTable(int index) {
+		this.jobId = index;
+		applicationFullName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+		applicationEmail.setCellValueFactory(new PropertyValueFactory<>("userEmail"));
+		applicationPhone.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+		applicationAddress.setCellValueFactory(new PropertyValueFactory<>("adress"));
+		
+		applicationList.setItems(jobService.getApplications(index));
+		
+	}
 
 	@FXML
-	void openApplicationsPane() {
+	void openMyApplicationsPage() {
 		setPanesVisibleFalse();
 		setTransition(myApplicationsPane, myApplicationsPane.getLayoutX(), myApplicationsPane.getLayoutY() - 1000,
 				myApplicationsPane.getLayoutX(), myApplicationsPane.getLayoutY(), 400);
@@ -442,6 +615,7 @@ public class MainPageController {
 	}
 
 	private void setPanesVisibleFalse() {
+		applicationsPane.setVisible(false);
 		profilePane.setVisible(false);
 		myJobsPane.setVisible(false);
 		jobListPane.setVisible(false);

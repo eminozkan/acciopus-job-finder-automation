@@ -11,7 +11,9 @@ import config.DatabaseConfig;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import support.dto.Job;
+import support.dto.User;
 import support.result.CreationResult;
+import support.result.UpdateResult;
 import support.session.UserSession;
 
 
@@ -125,6 +127,112 @@ public class JobServiceImpl implements JobService{
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public ObservableList<Job> getJobListByUserId(int userId) {
+		ObservableList<Job> jobList = FXCollections.observableArrayList();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select * from jobs where jobUserId = ?";
+        
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			preparedStatement.setInt(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+				while (resultSet.next()) {
+					Job job = new Job().setJobId(resultSet.getInt("jobId"))
+					.setJobHeader(resultSet.getString("jobHeader"))
+					.setCompanyName(resultSet.getString("companyName"))
+					.setJobText(resultSet.getString("jobText"))
+					.setJobSalary(resultSet.getInt("jobSalary"))
+					.setJobPostedDate(resultSet.getTimestamp("jobPostedDate"))
+					.setJobUserId(resultSet.getInt("jobUserId"));
+					jobList.add(job);
+				}
+				
+				preparedStatement.close();
+				connection.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobList;
+	}
+
+	@Override
+	public UpdateResult updateJobPost(Job j) {
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+            String insertQuery = "UPDATE jobs SET jobHeader = ? , companyName = ? , jobText = ? , jobSalary = ? where jobId = ?";
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setString(1,j.getJobHeader());
+            preparedStatement.setString(2, j.getCompanyName());
+            preparedStatement.setString(3, j.getJobText());
+            preparedStatement.setInt(4, j.getJobSalary());
+            preparedStatement.setInt(5, j.getJobId());
+            preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+            connection.close();
+            logger.information("User : \'" + UserSession.getUserEmail() + "\' has updated job.");
+            return UpdateResult.success("Job updated.");
+		}catch(Exception e) {
+			logger.debug("User : \'" + UserSession.getUserEmail()+ "\' has failed update job. Reason : " + e.getMessage());
+			return UpdateResult.failed(e.getMessage());
+		}
+	}
+
+	@Override
+	public void deleteJobPost(Job j) {
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+            String insertQuery = "Delete from jobs where jobId = ?";
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setInt(1,j.getJobId());
+            preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+            connection.close();
+            logger.information("User : \'" + UserSession.getUserEmail() + "\' has deleted job.");
+		}catch(Exception e) {
+			logger.debug("User : \'" + UserSession.getUserEmail()+ "\' has failed to deleting job. Reason : " + e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public ObservableList<User> getApplications(int jobId) {
+		ObservableList<User> userList = FXCollections.observableArrayList();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select users.userId , users.userName , users.userPhoneNumber, users.userSurname , users.userEmail , users.userAddress , users.hasUserCV from users "
+					+ "INNER JOIN applications ON users.userId = applications.userId where applications.jobId = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			preparedStatement.setInt(1, jobId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+				while (resultSet.next()) {
+					User user = new User()
+							.setName(resultSet.getString("users.userName"))
+							.setSurname(resultSet.getString("users.userSurname"))
+							.setUserId(resultSet.getInt("users.userId"))
+							.setPhoneNumber(resultSet.getString("users.userPhoneNumber"))
+							.setUserEmail(resultSet.getString("users.userEmail"))
+							.setAdress(resultSet.getString("users.userAddress"))
+							.setHasUserCV(resultSet.getBoolean("users.hasUserCV"));
+					
+					userList.add(user);
+							
+				}
+				
+				preparedStatement.close();
+				connection.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userList;
 	}
 
 }

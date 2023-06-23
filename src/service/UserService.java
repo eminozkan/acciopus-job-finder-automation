@@ -19,6 +19,8 @@ public interface UserService {
 	UpdateResult uploadCV(File file);
 	
 	CVObject getCV();
+	
+	CVObject getCV(int userId);
 
 	UpdateResult changePassword(ChangePasswordRequest request);
 	

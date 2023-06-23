@@ -249,4 +249,27 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+	@Override
+	public CVObject getCV(int userId) {
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select * from resumes where resumeUserId = ?";
+			String fileName = "";
+			byte[] blobData = null;
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			preparedStatement.setInt(1,userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Blob blob = resultSet.getBlob("resume");
+			    blobData = blob.getBytes(1, (int) blob.length());
+				fileName = resultSet.getString("resumeName");
+			}
+			
+			return new CVObject(blobData)
+				.setFileName(fileName);
+		}catch(Exception e) {
+			return new CVObject();
+		}
+	}
+
 }
