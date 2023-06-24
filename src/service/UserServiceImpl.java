@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 				}
 				createSession(userFromDB);
 				logger.information("User :" + userFromDB.getUserId() + " has logged into account");
-				return AuthorizationResult.success("Login success!");
+				return AuthorizationResult.success("Login success!",userFromDB.getRole());
 	}catch(Exception e) {
 		logger.debug("User \'" + user.getUserEmail() + "\' failed to login. Reason : " + e.getMessage());
 		return AuthorizationResult.failed(e.getMessage());

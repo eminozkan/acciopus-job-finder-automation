@@ -285,4 +285,34 @@ public class JobServiceImpl implements JobService{
 		
 	}
 
+	@Override
+	public Job getJobByJobId(int jobId) {
+		Job j = new Job();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+            String insertQuery = "select * from jobs where jobId = ?";
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setInt(1,jobId);
+            ResultSet result = preparedStatement.executeQuery();
+            if(result.next()) {
+            	j = new Job()
+            			.setCompanyName(result.getString("companyName"))
+            			.setJobHeader(result.getString("jobHeader"))
+            			.setJobText(result.getString("jobText"))
+            			.setJobSalary(result.getInt("jobSalary"))
+            			.setJobId(result.getInt("jobId"))
+            			.setJobUserId(result.getInt("jobUserId"))
+            			.setJobPostedDate(result.getTimestamp("jobPostedDate"));
+            }
+            
+            preparedStatement.close();
+            connection.close();
+           
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return j;
+	}
+
 }

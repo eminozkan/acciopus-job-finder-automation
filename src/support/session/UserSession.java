@@ -41,4 +41,9 @@ public class UserSession {
 	public static int getSessionId() {
 		return UserSession.sessionId;
 	}
+
+	public static void clear() {
+		UserSession.setUser(new User());
+		UserSession.sessionId = 0;
+	}
 }

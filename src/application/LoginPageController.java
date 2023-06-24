@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import javafx.util.Duration;
 import service.UserService;
+import support.dto.Role;
 import support.dto.User;
 import support.result.AuthorizationResult;
 import javafx.scene.control.Alert;
@@ -175,7 +176,12 @@ public class LoginPageController {
         		alert1.setHeaderText("Success");
         		alert1.setContentText("Logged into account!");
         		alert1.showAndWait();
-        		openMainPage();
+        		if(result.getUserRole() == Role.STANDART) {
+        			openMainPage();
+        		}else {
+        			 System.out.println("Admin user login");
+        		}
+        		
     	}
     	else {
     		Alert alert1 = new Alert(AlertType.ERROR);

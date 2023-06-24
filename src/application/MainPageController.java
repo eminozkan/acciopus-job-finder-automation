@@ -3,26 +3,23 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import config.ApplicationConfig;
-import config.DatabaseConfig;
 import javafx.animation.TranslateTransition;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -34,24 +31,30 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.util.Duration;
 import service.JobService;
+import service.NotificationService;
 import service.UserService;
 import support.dto.User;
 import support.dto.ChangePasswordRequest;
 import support.dto.Job;
+import support.dto.Notification;
 import support.result.CreationResult;
 import support.result.UpdateResult;
 import support.session.UserSession;
 import javafx.stage.FileChooser;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 
 public class MainPageController {
 
 	private UserService userService = ApplicationConfig.getUserService();
 	
 	private JobService jobService = ApplicationConfig.getJobService();
+	
+	private NotificationService notificationService = ApplicationConfig.getNotificationService();
 
 	@FXML
 	private ResourceBundle resources;
@@ -183,7 +186,19 @@ public class MainPageController {
 
 	@FXML
 	private Pane myJobsPane;
+	
 
+    @FXML
+    private TableColumn<Notification, Integer> notificationId;
+
+    
+    @FXML
+    private TableColumn<Notification, String> notificationMessage;
+    
+    @FXML
+    private TableColumn<Notification, Timestamp> notificationDate;
+    
+    
 	@FXML
 	private TextArea myJobsTextArea;
 
@@ -218,7 +233,7 @@ public class MainPageController {
 	private Pane notificationPane;
 
 	@FXML
-	private TableView<?> notificationTableView;
+	private TableView<Notification> notificationTableView;
 
 	@FXML
 	private Label notifications;
@@ -383,8 +398,8 @@ public class MainPageController {
 		jobTextArea.clear();
 		jobSalaryField.clear();
 		companyNameTextField.clear();
-		 Date now = new Date();
-         Timestamp time = new Timestamp(now.getTime()); 
+		Date now = new Date();
+        Timestamp time = new Timestamp(now.getTime()); 
 		jobDate.setValue(time.toLocalDateTime().toLocalDate());
 		
 		applyButton.setVisible(false);
@@ -393,7 +408,6 @@ public class MainPageController {
 	}
 
 	
-	//TODO update this method
 	@FXML
 	private void viewUserCV() {
 		int userId = jobService.getApplications(jobId).get(applicationList.getSelectionModel().getSelectedIndex()).getUserId();
@@ -406,6 +420,11 @@ public class MainPageController {
 			alert1.showAndWait();
 		} else {
 			try {
+				Job j = jobService.getJobByJobId(jobId);
+				Notification n = new Notification()
+						.setNotificationUserId(userId)
+						.setNotificationMessage(j.getJobHeaderWithCompanyName() +  " has viewed your cv.");
+				notificationService.sendNotification(n);
 				String os = System.getProperty("os.name").toLowerCase();
 				if (os.indexOf("win") >= 0) {
 					Runtime rt = Runtime.getRuntime();
@@ -451,6 +470,10 @@ public class MainPageController {
 				alert1.setContentText("Applied for job.");
 				alert1.showAndWait();
 				fillJobListTableView();
+				Notification n = new Notification()
+						.setNotificationUserId(j.getJobUserId())
+						.setNotificationMessage(UserSession.getUser().getFullName() + " has applied for " + j.getJobHeaderWithCompanyName() + ".");
+				notificationService.sendNotification(n);
 			}else {
 				Alert alert1 = new Alert(AlertType.ERROR);
 				alert1.setTitle("ERROR");
@@ -531,9 +554,21 @@ public class MainPageController {
 		} else {
 			setTransition(menu, -1024, -65, 0, 0, 400);
 			setTransition(menuLabel, 6, 6, 93, 14, 450);
+			updateNotificationCounter();
+			
 			menu.setVisible(true);
 		}
 
+	}
+
+	private void updateNotificationCounter() {
+		Integer counter = notificationService.getNotificationCount(UserSession.getUserId());
+		if(counter == 0) {
+			notificationCounter.setVisible(false);
+		}else {
+			notificationCounter.setVisible(true);
+			notificationCounter.setText(counter.toString());
+		}
 	}
 
 	private void setTransition(Node n, double locationFromX, double locationFromY, double locationToX,
@@ -583,6 +618,47 @@ public class MainPageController {
 		setTransition(notificationPane, notificationPane.getLayoutX(), notificationPane.getLayoutY() - 1000,
 				notificationPane.getLayoutX(), notificationPane.getLayoutY(), 400);
 		notificationPane.setVisible(true);
+		fillNotificationTable();
+	}
+	
+	private void fillNotificationTable() {
+		ObservableList<Notification> notificationList = notificationService.getNotifications(UserSession.getUserId());
+		
+		notificationId.setCellValueFactory(new PropertyValueFactory<>("notificationLocalId"));
+		notificationMessage.setCellValueFactory(new PropertyValueFactory<>("notificationMessage"));
+		notificationDate.setCellValueFactory(new PropertyValueFactory<>("notificationDate"));
+		
+		notificationTableView.setItems(notificationList);
+		
+	}
+
+	@FXML
+	private void deleteNotificationClick() {
+		
+		Alert alert1 = new Alert(AlertType.CONFIRMATION);
+		alert1.setTitle("Confirmation");
+		alert1.setHeaderText("Confirmation");
+		alert1.setContentText("Do you want to delete notification?");
+		ButtonType buttonYes = new ButtonType("Yes");
+		ButtonType buttonNo = new ButtonType("No");
+		alert1.getButtonTypes().clear();
+		alert1.getButtonTypes().add(buttonYes);
+		alert1.getButtonTypes().add(buttonNo);
+		Optional<ButtonType> result = alert1.showAndWait();
+		int index = notificationTableView.getSelectionModel().getSelectedIndex();
+		if(result.isPresent() && result.get() == buttonYes && index >= 0) {
+			Notification n = notificationService.getNotifications(UserSession.getUserId()).get(index);
+			notificationService.deleteNotification(n.getNotificationId());
+			fillNotificationTable();
+			updateNotificationCounter();
+		}else if(index < 0){
+			Alert alert2 = new Alert(AlertType.ERROR);
+			alert2.setTitle("ERROR");
+			alert2.setHeaderText("Error");
+			alert2.setContentText("Select notification from list");
+			alert2.showAndWait();
+		}
+		
 	}
 	
 	@FXML
@@ -774,6 +850,40 @@ public class MainPageController {
 			alert1.showAndWait();
 		}
 
+	}
+	
+	@FXML
+	private void logout() {
+		Alert alert1 = new Alert(AlertType.CONFIRMATION);
+		alert1.setTitle("Confirmation");
+		alert1.setHeaderText("Confirmation");
+		alert1.setContentText("Do you want to log out?");
+		ButtonType buttonYes = new ButtonType("Yes");
+		ButtonType buttonNo = new ButtonType("No");
+		alert1.getButtonTypes().clear();
+		alert1.getButtonTypes().add(buttonYes);
+		alert1.getButtonTypes().add(buttonNo);
+		Optional<ButtonType> result = alert1.showAndWait();
+		if(result.isPresent() && result.get() == buttonYes) {
+			 try {
+				 	UserSession.clear();
+					Image icon = new Image(getClass().getResourceAsStream("icon.png"));
+		        	AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("LoginPage.fxml"));
+		        	Stage activeStage =(Stage) logout.getScene().getWindow();
+		        	activeStage.close();
+		            Stage stage = new Stage();
+		            stage.setTitle("Login Page");
+		            stage.setScene(new Scene(root, 700, 500));
+		            stage.setResizable(false);
+		            stage.getIcons().add(icon);
+		            stage.setMaximized(false);
+		            stage.show();
+
+		        }
+		        catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		}
 	}
 
 }

@@ -24,4 +24,6 @@ public interface JobService {
 	ObservableList<Job> getApplicationsByUserId(int userId);
 
 	void deleteJobApplication(int applicationId);
+	
+	Job getJobByJobId(int jobId);
 }

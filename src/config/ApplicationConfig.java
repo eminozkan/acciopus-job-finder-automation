@@ -3,6 +3,8 @@ package config;
 import service.JobService;
 import service.JobServiceImpl;
 import service.Logger;
+import service.NotificationService;
+import service.NotificationServiceImpl;
 import service.UserService;
 import service.UserServiceImpl;
 
@@ -18,5 +20,9 @@ public class ApplicationConfig {
 	
 	public static JobService getJobService(){
 		return new JobServiceImpl();
+	}
+
+	public static NotificationService getNotificationService() {
+		return new NotificationServiceImpl();
 	}
 }
