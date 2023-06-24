@@ -25,6 +25,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -64,6 +66,12 @@ public class MainPageController {
 	
 	@FXML
 	private TextField companyNameText;
+	
+	@FXML
+	private TextField searchTextField;
+	
+	@FXML
+	private TextField myJobSearchTextField;
 
 	@FXML
 	private Label addressLabel;
@@ -260,9 +268,6 @@ public class MainPageController {
 	private Button removePostButton;
 
 	@FXML
-	private TextField searchField;
-
-	@FXML
 	private Label surnameLabel;
 
 	@FXML
@@ -410,7 +415,16 @@ public class MainPageController {
 	
 	@FXML
 	private void viewUserCV() {
-		int userId = jobService.getApplications(jobId).get(applicationList.getSelectionModel().getSelectedIndex()).getUserId();
+		int index = applicationList.getSelectionModel().getSelectedIndex();
+		if(index < 0) {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Failed");
+			alert1.setContentText("Select an applicator from list.");
+			alert1.showAndWait();
+			return;
+		}
+		int userId = jobService.getApplications(jobId).get(index).getUserId();
 		String url = userService.getCV(userId).getFilePath();
 		if (url == null) {
 			Alert alert1 = new Alert(AlertType.ERROR);
@@ -885,5 +899,26 @@ public class MainPageController {
 		        }
 		}
 	}
+	
+	
+    @FXML
+    void searchAction(KeyEvent event) {
+    	if(event.getCode() == KeyCode.ENTER) {
+    		header.setCellValueFactory(new PropertyValueFactory<>("jobHeaderWithCompanyName"));
+    		jobListTable.setItems(jobService.getJobList(searchTextField.getText()));
+    	}
+    }
+    
+    @FXML
+    void searchMyJobTable(KeyEvent event) {
+    	if(event.getCode() == KeyCode.ENTER) {
+    		myJobCompanyName.setCellValueFactory(new PropertyValueFactory<>("companyName"));
+    		myJobHeader.setCellValueFactory(new PropertyValueFactory<>("jobHeader"));
+    		myJobDescription.setCellValueFactory(new PropertyValueFactory<>("jobText"));
+    		myJobSalary.setCellValueFactory(new PropertyValueFactory<>("jobSalary"));
+    		
+    		myJobListTableView.setItems(jobService.getJobListByUserId(UserSession.getUserId(),myJobSearchTextField.getText()));
+    	}
+    }
 
 }

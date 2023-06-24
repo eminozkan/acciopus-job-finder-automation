@@ -169,6 +169,12 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
+            <Label layoutX="20.0" layoutY="78.0" text="🔎" textFill="WHITE">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <TextField fx:id="searchTextField" layoutX="45.0" layoutY="79.0" onKeyPressed="#searchAction" promptText="Search" style="-fx-background-radius: 15px;" />
          </children>
       </Pane>
       <Pane fx:id="myJobsPane" layoutX="71.0" layoutY="9.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
@@ -223,6 +229,7 @@
             <TextField fx:id="companyNameText" layoutX="734.0" layoutY="236.0" prefHeight="25.0" prefWidth="176.0" promptText="Company Name" />
             <TextField fx:id="salaryText" layoutX="733.0" layoutY="414.0" prefHeight="25.0" prefWidth="176.0" promptText="Salary Text" />
             <Label layoutX="914.0" layoutY="418.0" text="₺" textFill="WHITE" />
+            <TextField fx:id="myJobSearchTextField" layoutX="543.0" layoutY="74.0" onKeyPressed="#searchMyJobTable" promptText="🔎 Search" style="-fx-background-radius: 15px;" />
          </children>
       </Pane>
       <Pane fx:id="applicationsPane" layoutX="71.0" layoutY="9.0" prefHeight="573.0" prefWidth="939.0" style="-fx-border-style: solid; -fx-border-width: 2px;" visible="false">
@@ -302,7 +309,6 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <TextField fx:id="searchField" layoutX="734.0" layoutY="90.0" prefHeight="30.0" prefWidth="176.0" promptText="🔎 Search" style="-fx-background-radius: 15px;" />
             <TableView fx:id="myApplicationsTableView" layoutX="27.0" layoutY="77.0" prefHeight="469.0" prefWidth="678.0">
                <columns>
                   <TableColumn fx:id="myAppCompanyName" editable="false" prefWidth="75.0" style="-fx-border-style: solid; -fx-font-size: 20px; -fx-background-color: #8289c2; -fx-font-weight: 5000;" text="Company Name" />

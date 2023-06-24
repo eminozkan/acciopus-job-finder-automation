@@ -315,4 +315,63 @@ public class JobServiceImpl implements JobService{
 		return j;
 	}
 
+	@Override
+	public ObservableList<Job> getJobList(String jobName) {
+		ObservableList<Job> jobList = FXCollections.observableArrayList();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select * from jobs where jobHeader LIKE \"%" + jobName + "%\"";
+        
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			ResultSet resultSet = preparedStatement.executeQuery();
+				while (resultSet.next()) {
+					Job job = new Job().setJobId(resultSet.getInt("jobId"))
+					.setJobHeader(resultSet.getString("jobHeader"))
+					.setCompanyName(resultSet.getString("companyName"))
+					.setJobText(resultSet.getString("jobText"))
+					.setJobSalary(resultSet.getInt("jobSalary"))
+					.setJobPostedDate(resultSet.getTimestamp("jobPostedDate"))
+					.setJobUserId(resultSet.getInt("jobUserId"));
+					jobList.add(job);
+				}
+				
+				preparedStatement.close();
+				connection.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobList;
+	}
+
+	@Override
+	public ObservableList<Job> getJobListByUserId(int userId, String jobName) {
+		ObservableList<Job> jobList = FXCollections.observableArrayList();
+		try {
+			Connection connection = DatabaseConfig.getConnection().orElseThrow();
+			String selectQuery = "Select * from jobs where jobUserId = ? and jobHeader LIKE \"%" + jobName + "%\"" ;
+        
+			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
+			preparedStatement.setInt(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+				while (resultSet.next()) {
+					Job job = new Job().setJobId(resultSet.getInt("jobId"))
+					.setJobHeader(resultSet.getString("jobHeader"))
+					.setCompanyName(resultSet.getString("companyName"))
+					.setJobText(resultSet.getString("jobText"))
+					.setJobSalary(resultSet.getInt("jobSalary"))
+					.setJobPostedDate(resultSet.getTimestamp("jobPostedDate"))
+					.setJobUserId(resultSet.getInt("jobUserId"));
+					jobList.add(job);
+				}
+				
+				preparedStatement.close();
+				connection.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobList;
+	}
+
 }
