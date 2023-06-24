@@ -3,8 +3,13 @@ package support.dto;
 public class User {
 	private int userId;
 	private String name;
+	private String surname;
+	private String phoneNumber;
+	private String adress;
 	private String passwordHash;
 	private String userEmail;
+	private String fullName;
+	private boolean hasUserCV;
 	private Role role;
 	
 	
@@ -15,19 +20,28 @@ public class User {
 	public User(User user) {
 		this.userId = user.userId;
 		this.name = user.name;
+		this.surname = user.surname;
+		this.phoneNumber = user.phoneNumber;
+		this.adress = user.adress;
 		this.passwordHash = user.passwordHash;
 		this.userEmail = user.userEmail;
 		this.role = user.role;
+		this.hasUserCV = user.hasUserCV;
 	}
 	
 	
 	//All-Args Constructor
-	public User(int id,String username,String passwordHash,String userEmail,Role role) {
+	public User(int id,String username,String surname,String passwordHash,String userEmail,String phoneNumber,String address,boolean hasCV,Role role) {
 		this.userId =id;
 		this.name = username;
+		this.surname = surname;
+		this.phoneNumber = phoneNumber;
+		this.adress = address;
 		this.passwordHash = passwordHash;
 		this.userEmail = userEmail;
 		this.role = role;
+		this.hasUserCV = hasCV;
+
 	}
 	
 	
@@ -56,6 +70,23 @@ public class User {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	
+	public String getSurname() {
+		return surname;
+	}
+	
+	
+	public String getAdress() {
+		return adress;
+	}
+	
+	public boolean hasUserCV() {
+		return hasUserCV;
 	}
 	
 	public String getPasswordHash() {
@@ -96,4 +127,28 @@ public class User {
 		return this;
 	}
 	
+	public User setSurname(String surname) {
+		this.surname =  surname;
+		return this;
+	}
+	
+	public User setAdress(String adress) {
+		this.adress = adress;
+		return this;
+	}
+	
+	public User setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+		return this;
+	}
+	
+	public User setHasUserCV(boolean hasCV) {
+		this.hasUserCV = hasCV;
+		return this;
+	}
+
+	public String getFullName() {
+		return name + " " + surname;
+	}
+
 }
