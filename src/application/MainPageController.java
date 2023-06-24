@@ -692,6 +692,7 @@ public class MainPageController {
 			alert1.setHeaderText("Error");
 			alert1.setContentText("Select one item from list.");
 			alert1.showAndWait();
+			
 			return ;
 		}
 		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(index);
