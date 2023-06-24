@@ -11,6 +11,8 @@ public class User {
 	private String fullName;
 	private boolean hasUserCV;
 	private Role role;
+	private String roleAsString;
+	private String hasUserCVAsString;
 	
 	
 	//No-Arg Constructor
@@ -150,5 +152,12 @@ public class User {
 	public String getFullName() {
 		return name + " " + surname;
 	}
-
+	
+	public String getRoleAsString() {
+		return role.name();
+	}
+	
+	public String getHasUserCVAsString() {
+		return hasUserCV ? "True" : "False";
+	}
 }

@@ -1,5 +1,7 @@
 package config;
 
+import service.AdminService;
+import service.AdminServiceImpl;
 import service.JobService;
 import service.JobServiceImpl;
 import service.Logger;
@@ -24,5 +26,9 @@ public class ApplicationConfig {
 
 	public static NotificationService getNotificationService() {
 		return new NotificationServiceImpl();
+	}
+	
+	public static AdminService getAdminService() {
+		return new AdminServiceImpl();
 	}
 }

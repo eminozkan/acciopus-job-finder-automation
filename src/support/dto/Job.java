@@ -7,6 +7,7 @@ public class Job {
 	
 	private int jobId;
 	private String companyName;
+	private String jobUserName;
 	private String jobHeader;
 	private String jobHeaderWithCompanyName;
 	private String jobText;
@@ -84,6 +85,15 @@ public class Job {
 
 	public Job setCompanyName(String companyName) {
 		this.companyName = companyName;
+		return this;
+	}
+
+	public String getJobUserName() {
+		return jobUserName;
+	}
+
+	public Job setJobUserName(String jobUserName) {
+		this.jobUserName = jobUserName;
 		return this;
 	}
 	

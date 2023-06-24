@@ -9,7 +9,9 @@ import support.result.AuthorizationResult;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import support.result.CreationResult;
+import javafx.scene.control.ButtonType;
 
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import config.ApplicationConfig;
@@ -179,7 +181,21 @@ public class LoginPageController {
         		if(result.getUserRole() == Role.STANDART) {
         			openMainPage();
         		}else {
-        			 System.out.println("Admin user login");
+        			 Alert alert = new Alert(AlertType.CONFIRMATION);
+        			 alert.setTitle("Choose one");
+        			 alert.setHeaderText("Choose panel do you want to launch");
+        			 alert.setContentText("Choose panel do you want to launch");
+        			 ButtonType adminPage = new ButtonType("Go to Admin Panel");
+        			 ButtonType userPage = new ButtonType("Go to User Panel");
+        			 alert.getButtonTypes().clear();
+        			 alert.getButtonTypes().add(adminPage);
+        			 alert.getButtonTypes().add(userPage);
+        			 Optional<ButtonType> alertResult = alert.showAndWait();
+        			 if(alertResult.isPresent() && alertResult.get() == adminPage) {
+        				 openAdminPage();
+        			 }else if(alertResult.isPresent() && alertResult.get() == userPage) {
+        				 openMainPage();
+        			 }
         		}
         		
     	}
@@ -192,7 +208,27 @@ public class LoginPageController {
     	}
     }
     
-    @FXML
+    private void openAdminPage() {
+    	 try {
+ 			Image icon = new Image(getClass().getResourceAsStream("icon.png"));
+         	AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("AdminPage.fxml"));
+         	Stage activeStage =(Stage) loginButton.getScene().getWindow();
+         	activeStage.close();
+             Stage stage = new Stage();
+             stage.setTitle("Admin Page");
+             stage.setScene(new Scene(root, 1024, 600));
+             stage.setResizable(false);
+             stage.getIcons().add(icon);
+             stage.setMaximized(false);
+             stage.show();
+
+         }
+         catch (Exception e) {
+             e.printStackTrace();
+         }
+	}
+
+	@FXML
     private void signupButtonClick() {
     	final User user = User.createStandartUser(signupName.getText(), signupPassword.getText(), signupEmail.getText());
     	CreationResult result = userService.register(user);
