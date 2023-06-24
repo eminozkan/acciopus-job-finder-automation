@@ -216,7 +216,7 @@ public class LoginPageController {
          	activeStage.close();
              Stage stage = new Stage();
              stage.setTitle("Admin Page");
-             stage.setScene(new Scene(root, 1024, 600));
+             stage.setScene(new Scene(root, 1024, 661));
              stage.setResizable(false);
              stage.getIcons().add(icon);
              stage.setMaximized(false);

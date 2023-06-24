@@ -11,14 +11,14 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorpane" minHeight="600.0" minWidth="1024.0" prefHeight="400.0" prefWidth="626.0" scaleShape="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AdminPageController">
+<AnchorPane fx:id="anchorpane" minHeight="600.0" minWidth="1024.0" prefHeight="661.0" prefWidth="1024.0" scaleShape="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AdminPageController">
    <children>
-      <Rectangle id="background" fx:id="background" arcHeight="5.0" arcWidth="5.0" fill="#40b6da" height="600.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
+      <Rectangle id="background" fx:id="background" arcHeight="5.0" arcWidth="5.0" fill="#40b6da" height="661.0" stroke="BLACK" strokeType="INSIDE" width="1024.0" />
       <TabPane layoutY="1.0" prefHeight="600.0" prefWidth="1024.0" style="-fx-padding: 0; -fx-background-position: center;" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="usersTab" style="-fx-padding: 5px; -fx-pref-width: 40;" text="Users">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="522.0" prefWidth="1024.0" style="-fx-border-style: solid;">
                      <children>
                         <TableView fx:id="userTableView" layoutX="65.0" layoutY="83.0" prefHeight="398.0" prefWidth="895.0">
                           <columns>
@@ -109,5 +109,21 @@
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="swithUserAccount" layoutX="735.0" layoutY="607.0" mnemonicParsing="false" onMouseClicked="#switchToUserPage" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 15px; -fx-padding: 10px; -fx-border-width: 3;" text="↔ Switch to User Page" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="logoutButton" layoutX="924.0" layoutY="608.0" mnemonicParsing="false" onMouseClicked="#logOut" style="-fx-background-color: red; -fx-background-radius: 15px; -fx-padding: 10px; -fx-border-radius: 11px; -fx-border-color: white; -fx-border-width: 2px;" text="↖ Log out" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>

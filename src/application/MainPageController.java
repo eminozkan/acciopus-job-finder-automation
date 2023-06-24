@@ -43,6 +43,7 @@ import support.dto.User;
 import support.dto.ChangePasswordRequest;
 import support.dto.Job;
 import support.dto.Notification;
+import support.dto.Role;
 import support.result.CreationResult;
 import support.result.UpdateResult;
 import support.session.UserSession;
@@ -206,6 +207,9 @@ public class MainPageController {
     @FXML
     private TableColumn<Notification, Timestamp> notificationDate;
     
+    @FXML
+    private Label switchToAdminButton;
+    
     
 	@FXML
 	private TextArea myJobsTextArea;
@@ -312,7 +316,11 @@ public class MainPageController {
 		 Date now = new Date();
          Timestamp time = new Timestamp(now.getTime()); 
 		jobDate.setValue(time.toLocalDateTime().toLocalDate());
-		
+		if(UserSession.getUser().getRole() == Role.ADMIN) {
+			switchToAdminButton.setVisible(true);
+		}else {
+			switchToAdminButton.setVisible(false);
+		}
 		fillMyJobListTableView();
 	}
 
@@ -918,6 +926,43 @@ public class MainPageController {
     		myJobSalary.setCellValueFactory(new PropertyValueFactory<>("jobSalary"));
     		
     		myJobListTableView.setItems(jobService.getJobListByUserId(UserSession.getUserId(),myJobSearchTextField.getText()));
+    	}
+    }
+    
+    @FXML
+    void switchToAdminPage() {
+    	boolean result;
+    	Alert alert1 = new Alert(AlertType.CONFIRMATION);
+		alert1.setTitle("Confirmation");
+		alert1.setHeaderText("Confirmation");
+		alert1.setContentText("Do you want to switch to Admin Page?");
+		alert1.getButtonTypes().clear();
+		ButtonType yesButton = new ButtonType("Yes");
+		ButtonType noButton = new ButtonType("No");
+		alert1.getButtonTypes().add(yesButton);
+		alert1.getButtonTypes().add(noButton);
+		
+		Optional<ButtonType> alertResult = alert1.showAndWait();
+		result =  alertResult.isEmpty() ? false : (alertResult.get() == yesButton ? true : false);
+		
+    	if(result) {
+            try {
+    			Image icon = new Image(getClass().getResourceAsStream("icon.png"));
+            	AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("AdminPage.fxml"));
+            	Stage activeStage =(Stage) jobs.getScene().getWindow();
+            	activeStage.close();
+                Stage stage = new Stage();
+                stage.setTitle("Admin Page");
+                stage.setScene(new Scene(root, 1024, 661));
+                stage.setResizable(false);
+                stage.getIcons().add(icon);
+                stage.setMaximized(false);
+                stage.show();
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
     	}
     }
 

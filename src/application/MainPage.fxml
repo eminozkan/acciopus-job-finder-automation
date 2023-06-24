@@ -351,7 +351,7 @@
             </Label>
             <Label fx:id="notificationCounter" alignment="CENTER" layoutX="161.0" layoutY="255.0" style="-fx-background-color: white; -fx-background-radius: 40; -fx-padding: 5;" text="5" />
             <Label layoutX="67.0" layoutY="485.0" textFill="WHITE" />
-            <Label fx:id="logout" alignment="CENTER" layoutX="86.0" layoutY="306.0" onMouseClicked="#logout" text="Log out" textFill="WHITE">
+            <Label fx:id="logout" alignment="CENTER" layoutX="74.0" layoutY="307.0" onMouseClicked="#logout" text="↖ Log out" textFill="WHITE">
                <font>
                   <Font name="Calibri Bold" size="22.0" />
                </font>
@@ -370,6 +370,14 @@
             <Label fx:id="jobs1" alignment="CENTER" layoutX="14.0" layoutY="145.0" onMouseClicked="#openJobList" text="💼 Jobs" textFill="WHITE">
                <font>
                   <Font name="Calibri Bold" size="22.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label fx:id="switchToAdminButton" alignment="CENTER" layoutX="50.0" layoutY="348.0" onMouseClicked="#switchToAdminPage" text="↔ Switch to Admin Page" textFill="WHITE">
+               <font>
+                  <Font name="Calibri Bold" size="14.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
