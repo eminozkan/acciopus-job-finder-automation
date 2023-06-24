@@ -685,8 +685,16 @@ public class MainPageController {
 	
 	@FXML
 	void openApplicationsPage() {
-		
-		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(myJobListTableView.getSelectionModel().getSelectedIndex());
+		int index = myJobListTableView.getSelectionModel().getSelectedIndex();
+		if(index < 0) {
+			Alert alert1 = new Alert(AlertType.ERROR);
+			alert1.setTitle("ERROR");
+			alert1.setHeaderText("Error");
+			alert1.setContentText("Select one item from list.");
+			alert1.showAndWait();
+			return ;
+		}
+		Job j = jobService.getJobListByUserId(UserSession.getUserId()).get(index);
 		if(j != null) {
 			System.out.println(j.getJobId() + "");
 			setPanesVisibleFalse();
